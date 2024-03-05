@@ -1,0 +1,42 @@
+{% extends 'base/base.html' %}
+{% block body %}
+<div class="container-fluid">
+    <div class="row mb-3">
+        <div class="col-12">
+            <ul class="nav nav-tabs">
+                <li class="nav-item"><a class="nav-link active" href="{{url_for('setting.index')}}">{{session['lang']['setting']}}</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-bordered">
+                <thead class="bg-primary text-white">
+                    <tr>
+                        <th>{{session['lang']['key']}}</th>
+                        <th>{{session['lang']['value']}}</th>
+                        <th>{{session['lang']['operation']}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in result %}
+                    <tr>
+                        <td>{{session['lang'][r.key]}}</td>
+                        <td>{{r.value}}</td>
+                        <td>
+                            {% if r.id==1 %}
+                            <a href="{{url_for('setting.modify_language')}}">{{session['lang']['edit']}}</a>
+                            {% elif r.id==4 %}
+                            <a href="{{url_for('setting.modify_logo')}}">{{session['lang']['edit']}}</a>
+                            {% else %}
+                            <a href="{{url_for('setting.modify', id=r.id)}}">{{session['lang']['edit']}}</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

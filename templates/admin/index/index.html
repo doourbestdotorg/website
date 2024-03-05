@@ -1,0 +1,10 @@
+{% extends 'base/base.html' %}
+{% block body %}
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-12 pt-3">
+			{{session['lang']['attention']|safe}}
+		</div>
+	</div>
+</div>
+{% endblock %}

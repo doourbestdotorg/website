@@ -1,0 +1,155 @@
+{% extends 'base/base.html' %}
+{% block body %}
+<div class="container-fluid">
+    <div class="row mb-3">
+        <div class="col-12">
+            <ul class="nav nav-tabs">
+                <li class="nav-item"><a class="nav-link active" href="{{url_for('say.index')}}">{{session['lang']['say']}}</a></li>
+				<li class="nav-item"><a class="nav-link" href="{{url_for('say.add')}}">{{session['lang']['add']}}</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <form method="post" class="form-horizontal" enctype="multipart/form-data">
+                <div class="form-group row mt-3">
+                    <label for="" class="col-12 col-xl-2 col-lg-2 col-md-3 control-label text-right">{{session['lang']['content']}}</label>
+                    <div class="col-12 col-xl-10 col-lg-10 col-md-9">
+                        <textarea name="content" id="content" onpropertychange="cal()" maxlength="2000" class="form-control" style="height:10rem;" placeholder="{{session['lang']['content_hint']}}">{{result.content}}</textarea>
+                        <div class="w-100 text-right"><span id="last">0</span>/280</div>
+                    </div>
+                </div>
+                <div class="form-group row mt-3">
+                    <label for="" class="col-12 col-xl-2 col-lg-2 col-md-3 control-label text-right">{{session['lang']['thumbnail_preview']}}</label>
+                    <div class="col-12 col-xl-10 col-lg-10 col-md-9">
+                        <div class="row {% if not result_img %} d-none {% endif %}" id="imgList">
+                            {% for r in result_img %}
+                            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-6 col-12 mb-2">
+                                <img src="{{r}}" class="img-fluid" />
+                                <input type="hidden" name="img[]" value="{{r}}">
+                                <div class="w-100 text-center">
+                                    <span class="float-left move-left">{{session['lang']['left']}}</span>
+                                    <span class="text-center move-close">{{session['lang']['delete']}}</span>
+                                    <span class="float-right move-right">{{session['lang']['right']}}</span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row mt-3">
+                    <label for="" class="col-12 col-xl-2 col-lg-2 col-md-3 control-label text-right">{{session['lang']['upload_thumbnail']}}</label>
+                    <div class="col-12 col-xl-10 col-lg-10 col-md-9">
+                        <input type="file" id="file" accept="image/png, image/gif, image/jpg, image/jpeg">
+                    </div>
+                </div>
+                <div class="form-group row mt-3">
+                    <label for="" class="col-12 col-xl-2 col-lg-2 col-md-3 control-label text-right">{{session['lang']['status']}}</label>
+                    <div class="col-12 col-xl-10 col-lg-10 col-md-9">
+                        <select class="form-control" name="status" id="status">
+                            <option value="0" {% if result.status==0 %} selected {% endif %}>{{session['lang']['disabled']}}</option>
+                            <option value="1" {% if result.status==1 %} selected {% endif %}>{{session['lang']['normal']}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row mt-3">
+                    <label for="" class="col-12 col-xl-2 col-lg-2 col-md-3 control-label text-right">{{session['lang']['twitter']}}</label>
+                    <div class="col-12 col-xl-10 col-lg-10 col-md-9">
+                        <select class="form-control" name="is_post" id="is_post">
+                            <option value="0" {% if result.is_post==0 %} selected {% endif %}>{{session['lang']['not_tweeted']}}</option>
+                            <option value="1" {% if result.is_post==1 %} selected {% endif %}>{{session['lang']['tweeted']}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row mt-3">
+                    <label for="" class="col-12 col-xl-2 col-lg-2 col-md-3 control-label text-right">{{session['lang']['automatic_tweet_datetime']}}</label>
+                    <div class="col-12 col-xl-10 col-lg-10 col-md-9">
+                        <input type="datetime-local" step="1" name="datetime" id="datetime" class="form-control" value="{{result.add_time|time_to_datetime}}" placeholder="{{session['lang']['automatic_tweet_datetime_hint']}}" />
+                    </div>
+                </div>
+                <div class="form-group row mt-3">
+                    <label for="" class="col-12 col-xl-2 col-lg-2 col-md-3 control-label text-right"></label>
+                    <div class="col-12 col-xl-10 col-lg-10 col-md-9">
+                        <input type="submit" class="btn btn-primary text-white btn-block" value="{{session['lang']['submit']}}">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+var maxchar=280;
+function cal() { 
+    var input_len=document.getElementById("content").value.length;
+    document.getElementById("last").innerHTML=maxchar-input_len;
+} 
+ 
+if(/msie/i.test(navigator.userAgent)){//ie
+    document.getElementById('content').onpropertychange=cal;
+}else {//Not ie
+    document.getElementById('content').addEventListener("input",cal,false); 
+}
+
+document.getElementById('file').onchange=function (ev) {
+    var formData=new FormData();
+    var files=document.getElementById('file').files;
+    formData.append('file', files[0]);
+    var url="{{url_for('say.upload')}}";
+    var xmlhttp=new XMLHttpRequest();
+    xmlhttp.open('POST', url+"?"+new Date().getTime(), true);
+    xmlhttp.setRequestHeader('Cache-Control','no-cache');
+    xmlhttp.setRequestHeader('If-Modified-Since','0');
+    //xmlhttp.setRequestHeader('Content-Type',"multipart/form-data");
+    xmlhttp.onreadystatechange=function(){
+        if(xmlhttp.readyState!==4){
+            return false;
+        }
+        if(xmlhttp.status!==200 && xmlhttp.status!==304){
+            alert("http status:"+xmlhttp.status);
+            return false;
+        }
+        if(xmlhttp.readyState===4 && xmlhttp.status===200){
+            var result=JSON.parse(xmlhttp.responseText);
+            if(result.code==0){
+                document.getElementById('imgList').style.display='';
+                var imgListHtml=document.getElementById('imgList').innerHTML;
+                var imgHtml='<div class="col-xl-2 col-lg-2 col-md-3 col-sm-6 col-12 mb-2"><img src="'+result.message+'" class="img-fluid" /><input type="hidden" name="img[]" value="'+result.message+'"><div class="w-100 text-center"><span class="float-left move-left">{{session["lang"]["left"]}}</span><span class="text-center move-close">{{session["lang"]["delete"]}}</span><span class="float-right move-right">{{session["lang"]["right"]}}</span></div></div>';
+                document.getElementById('imgList').innerHTML=imgListHtml+imgHtml;
+            }else{
+                alert(result.message);
+            }
+        }
+    }
+    xmlhttp.send(formData);
+}
+$(document).ready(function () {
+    $('#imgList').on('click', '.move-left', function () {
+        var list=$('#imgList').children();
+        var currentNode=$(this).parents().parents();
+        var current_index=currentNode.index();
+        if(current_index>0){
+            var thisHtml='<div class="col-xl-2 col-lg-2 col-md-3 col-sm-6 col-12 mb-2">'+currentNode.html()+'</div>';
+            list.eq(current_index-1).before(thisHtml);
+            list.eq(current_index).remove();
+        }
+    });
+    $('#imgList').on('click', '.move-right', function () {
+        var list=$('#imgList').children();
+        var list_length=list.length;
+        var currentNode=$(this).parents().parents();
+        var current_index=currentNode.index();
+        if(current_index<list_length){
+            var thisHtml='<div class="col-xl-2 col-lg-2 col-md-3 col-sm-6 col-12 mb-2">'+currentNode.html()+'</div>';
+            list.eq(current_index+1).after(thisHtml);
+            list.eq(current_index).remove();
+        }
+    });
+    $('#imgList').on('click', '.move-close', function () {
+        var list=$('#imgList').children();
+        var currentNode=$(this).parents().parents();
+        var current_index=currentNode.index();
+        list.eq(current_index).remove();
+    });
+});
+</script>
+{% endblock %}

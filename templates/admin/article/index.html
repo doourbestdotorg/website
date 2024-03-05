@@ -1,0 +1,55 @@
+{% extends 'base/base.html' %}
+{% block body %}
+<script>
+function del(obj){
+    if(confirm("{{session['lang']['confirm_delete']}}")){
+        var id=obj.getAttribute('id');
+        var url=obj.getAttribute('url');
+        location.href=url;
+    }
+}
+</script>
+<div class="container-fluid">
+    <div class="row mb-3">
+        <div class="col-12">
+            <ul class="nav nav-tabs">
+                <li class="nav-item"><a class="nav-link active" href="{{url_for('article.index')}}">{{session['lang']['article']}}</a></li>
+				<li class="nav-item"><a class="nav-link" href="{{url_for('article.add')}}">{{session['lang']['add']}}</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-bordered">
+                <thead class="bg-primary text-white">
+                    <tr>
+                        <th>{{session['lang']['title']}}</th>
+						<th>{{session['lang']['sort']}}</th>
+                        <th>{{session['lang']['status']}}</th>
+                        <th>{{session['lang']['operation']}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in result %}
+                    <tr>
+                        <td>{{r.title}}</td>
+						<td>{{r.sort}}</td>
+                        <td>
+                            {% if r.status==1 %}
+                            <span class="btn btn-sm btn-success">{{session['lang']['normal']}}</span>
+                            {% elif r.status==0 %}
+                            <span class="btn btn-sm btn-secondary">{{session['lang']['disabled']}}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{url_for('article.modify', id=r.id)}}">{{session['lang']['edit']}}</a> || 
+                            <a href="javascript:void(0);" id="{{r.id}}" url="{{url_for('article.deletes',id=r.id)}}" onclick="del(this)">{{session['lang']['delete']}}</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table><div class="page">{{ pagination.links }}</div>
+        </div>
+    </div>
+</div>
+{% endblock %}

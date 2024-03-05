@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>{{session['lang']['backend']}}</title>
+<link href="{{url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{{url_for('static', filename='js/jquery.min.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static', filename='js/popper.min.js')}}"></script>
+</head>
+<body>
+<div class="container-fluid bg-info">
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg navbar-dark" style="padding: 0;">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample01" aria-controls="navbarsExample01" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarsExample01">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item pl-3 pr-3">
+                        <a class="nav-link text-white" href="{{url_for('index')}}">{{session['lang']['home']}}</a>
+                    </li>
+                    <li class="nav-item pl-3 pr-3">
+                        <a class="nav-link text-white" href="{{url_for('navigation.index')}}">{{session['lang']['navigation']}}</a>
+                    </li>
+                    <li class="nav-item pl-3 pr-3">
+                        <a class="nav-link text-white" href="{{url_for('say.index')}}">{{session['lang']['say']}}</a>
+                    </li>
+                    <li class="nav-item pl-3 pr-3">
+                        <a class="nav-link text-white" href="{{url_for('about.index')}}">{{session['lang']['about']}}</a>
+                    </li>
+                    <li class="nav-item pl-3 pr-3">
+                        <a class="nav-link text-white" href="{{url_for('category.index')}}">{{session['lang']['category']}}</a>
+                    </li>
+                    <li class="nav-item pl-3 pr-3">
+                        <a class="nav-link text-white" href="{{url_for('article.index')}}">{{session['lang']['article']}}</a>
+                    </li>
+                    <li class="nav-item pl-3 pr-3">
+                        <a class="nav-link text-white" href="{{url_for('setting.index')}}">{{session['lang']['setting']}}</a>
+                    </li>
+                    <li class="nav-item pl-3 pr-3">
+                        <a class="nav-link text-white" href="{{url_for('admin.index')}}">{{session['lang']['admin']}}</a>
+                    </li>
+                    <li class="nav-item pl-3 pr-3">
+                        <a class="nav-link text-white" href="{{url_for('login.logout')}}">{{session['lang']['logout']}}</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</div>
+{% block body %}
+{% endblock %}
+</body>
+</html>
+

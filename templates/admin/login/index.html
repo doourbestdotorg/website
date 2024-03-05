@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>{{session['lang']['login']}}</title>
+<script src="{{url_for('static', filename='js/jquery.min.js')}}"></script>
+<link href="{{url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet">
+<script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+<script>
+function submitForm(){
+    var username=document.getElementById('username').value;
+    var password=document.getElementById('password').value;
+    if(username==""){
+        alert("{{session['lang']['username_hint']}}");
+        return false;
+    }else if(password==""){
+        alert("{{session['lang']['password_hint']}}");
+        return false;
+    }
+}
+</script>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row mt-5">
+        <div class="col-4"></div>
+        <div class="col-4">
+            <h3 class="text-center m-5 text-white">{{session['lang']['login']}}</h3>
+            <form method="post">
+				<div class="username mt-4">
+					<input type="text" class="form-control" name="username" id="username" placeholder="{{session['lang']['username_hint']}}" value="admintest" />
+				</div>
+				<div class="username mt-4">
+					<input type="password" class="form-control" name="password" id="password" placeholder="{{session['lang']['password_hint']}}" value="admintest" />
+				</div>
+				<div class="username mt-4">
+					<input type="submit" onclick="return submitForm();" name="submit" class="btn bg-primary btn-block text-white" value="{{session['lang']['submit']}}" />
+				</div>
+            </form>
+        </div>
+        <div class="col-4"></div>
+    </div>
+</div>
+</body>
+</html>

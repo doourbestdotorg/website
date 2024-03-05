@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" />
+<link rel="stylesheet" href="{{ url_for('static', filename='css/share.min.css') }}" />
+<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery.share.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/default.js') }}"></script>
+<title>{{title}}</title>
+<meta name="keywords" content="{{keyword}}"/>
+<meta name="description" content="{{description}}"/>
+<!-- twitter share -->
+<meta property="twitter:url" content="https://doourbest.org"/>
+<meta name="twitter:title" content="{{title}}"/>
+<meta name="twitter:description" content="{{description}}"/>
+<meta name="twitter:site" content="Human Rights and Current Affairs">
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="{{thumbnail}}"/>
+
+<!-- facebook share -->
+<meta property="og:url" content="https://doourbest.org"/>
+<meta property="og:title" content="{{title}}"/>
+<meta property="og:description" content="{{description}}"/>
+<meta property="og:image" content="{{thumbnail}}"/>
+<meta property="og:type" content="website"/>
+
+<style type="text/css">
+html body{background-color: #f8f9fa !important;}
+.border-bottom-light{border-bottom:1rem solid #f8f9fa !important;}
+a:hover{text-decoration:none;}
+#content img, #anchor img{max-width:100%; display:block; margin:0 auto;}
+.pagination{text-align:center !important;}
+.pagination li{display:inline-block !important;}
+</style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="container pl-0 pr-0">
+        <nav class="navbar navbar-expand-lg navbar-light pl-0 pr-0">
+            <a href="{{url_for('index')}}">
+                <img class="mr-4" style="width:3rem; height:3rem; border-radius: 1.5rem;" src="{{session['setting']['logo']}}" />
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto text-right">
+                    {% for r in (session['navigation']|str_to_dict) %}
+                    <li class="nav-item ml-3 mr-3 active">
+                        <a class="nav-link" href="{{r.url}}">{{r.title}}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </nav>
+    </div>
+</div>
+{% block body %}
+{% endblock %}
+<div class="container">
+    <div class="row pt-3 pb-3 border-top">
+        <div class="col-12 text-center text-muted small">
+            {{session['setting']['website_name']}}
+        </div>
+    </div>
+</div>
+</body>
+</html>

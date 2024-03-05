@@ -1,0 +1,59 @@
+{% extends 'base/base.html' %}
+{% block body %}
+<script>
+function submitForm(){
+    var username=$.trim($('#username').val());
+    var password=$.trim($('#password').val());
+    var repassword=$.trim($('#repassword').val());
+    if(username.toString().length<6){
+        alert("{{session['lang']['username_hint']}}");
+        return false;
+    }else if(password.toString().length<6){
+        alert("{{session['lang']['password_hint']}}");
+        return false;
+    }else if(password!=repassword){
+        alert("{{session['lang']['password_inconsistent_hint']}}");
+        return false;
+    }
+}
+</script>
+<div class="container-fluid">
+    <div class="row mb-3">
+        <div class="col-12">
+            <ul class="nav nav-tabs">
+                <li class="nav-item"><a class="nav-link active" href="{{url_for('admin.index')}}">{{session['lang']['password_edit']}}</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <form method="post" class="form-horizontal" enctype="multipart/form-data">
+                <div class="form-group row">
+                    <label for="" class="col-12 col-xl-2 col-lg-2 col-md-3 control-label text-right">{{session['lang']['username']}}</label>
+                    <div class="col-12 col-xl-10 col-lg-10 col-md-9">
+                        <input type="text" class="form-control" name="username" id="username" value="{{session['username']}}" placeholder="{{session['lang']['username_hint']}}">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="" class="col-12 col-xl-2 col-lg-2 col-md-3 control-label text-right">{{session['lang']['new_password']}}</label>
+                    <div class="col-12 col-xl-10 col-lg-10 col-md-9">
+                        <input type="password" class="form-control" name="password" id="password" placeholder="{{session['lang']['password_hint']}}">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="" class="col-12 col-xl-2 col-lg-2 col-md-3 control-label text-right">{{session['lang']['confirm_new_password']}}</label>
+                    <div class="col-12 col-xl-10 col-lg-10 col-md-9">
+                        <input type="password" class="form-control" name="repassword" id="repassword" placeholder="{{session['lang']['password_hint']}}">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="" class="col-12 col-xl-2 col-lg-2 col-md-3 control-label text-right"></label>
+                    <div class="col-12 col-xl-10 col-lg-10 col-md-9">
+                        <input type="submit" onclick="return submitForm();" class="btn btn-primary text-white" value="{{session['lang']['submit']}}">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

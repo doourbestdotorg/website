@@ -1,0 +1,50 @@
+{% extends 'base/base.html' %}
+{% block body %}
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+    var add_time=parseInt("{{result.add_time}}")*1000;
+    var dt=local_datetime(add_time);
+    document.getElementById('datetime').innerHTML=dt;
+},false);
+</script>
+<div class="container">
+	<div class="row">
+        <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12 bg-white pb-5">
+            <div class="w-100 text-center pt-3 pb-3 block h6">
+                {{ result.title }}
+            </div>
+            <div class="w-100 text-center pb-3 small text-muted" id="datetime"></div>
+            <div class="w-100  pb-3 block">
+                <div class="social-share"></div>
+            </div>
+            {% if result.video %}
+            <div class="w-100 pb-4">
+                <video style="width:100%;" src="{{ result.video }}" controls></video>
+            </div>
+            {% endif %}
+            <div class="w-100 clearfix" id="content">
+                {{ result.content|safe }}
+            </div>
+            {% if result.from_title and not result.from_url %}
+            <div class="w-100 mt-3 text-secondary">
+                {{session['lang']['from_title']}}: {{ result.from_title }}
+            </div>
+            {% endif %}
+            {% if result.from_title and result.from_url %}
+            <div class="w-100 mt-3 text-secondary">
+                {{session['lang']['from_title']}}: <a class="text-secondary" href="{{result.from_url}}">{{ result.from_title }}</a>
+            </div>
+            {% endif %}
+        </div>
+        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 bg-white pt-3">
+            <div class="list-group-item border-0 pl-0 pr-0 text-dark font-weight-bold">{{session['lang']['recommend']}}</div>
+            {% for r in result_recommend %}
+            <a class="card mb-3 text-dark" href="{{ url_for('article.content', id=r.id) }}">
+                <img src="{{ r.thumbnail }}" class="card-img-top" />
+                <div class="card-body"><p class="card-text">{{ r.title }}</p></div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

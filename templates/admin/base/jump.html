@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Admin</title>
+<link href="{{url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', function(){
+	var last_time=parseInt("{{ last_time }}");
+	var message="{{ message }}";
+	var jump_url="{{ jump_url }}";
+	if(last_time!==NaN && message!=='' && jump_url!==''){
+		document.getElementById('message').innerHTML=message;
+		document.getElementById('jump_time').innerHTML=last_time;
+		var inter=setInterval(function(){
+			last_time--;
+			document.getElementById('jump_time').innerHTML=last_time;
+			if(last_time===0){
+				location.href=jump_url;
+			}
+		}, 1000);
+	}
+}, false);
+</script>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-12 text-center">
+            <div class="m-5 h5" id="jump_time"></div>
+            <h2 id="message">{{ message }}</h2>
+        </div>
+    </div>
+</div>
+</body>
+</html>

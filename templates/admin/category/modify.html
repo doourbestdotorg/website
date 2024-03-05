@@ -1,0 +1,69 @@
+{% extends 'base/base.html' %}
+{% block body %}
+<script type="text/javascript">
+function submitForm(){
+    var title=document.getElementById('title').value;
+    var list_style=document.getElementById('list_style').value;
+    if(!title){
+        alert("{{session['lang']['title_hint']}}");
+        return false;
+    }else if(list_style==0){
+        alert("{{session['lang']['list_style_hint']}}");
+        return false;
+    }
+}
+</script>
+<div class="container-fluid">
+    <div class="row mb-3">
+        <div class="col-12">
+            <ul class="nav nav-tabs">
+                <li class="nav-item"><a class="nav-link active" href="{{url_for('category.index')}}">{{session['lang']['category']}}</a></li>
+				<li class="nav-item"><a class="nav-link" href="{{url_for('category.add')}}">{{session['lang']['add']}}</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <form method="post" class="form-horizontal" enctype="multipart/form-data">
+                <div class="form-group row">
+                    <label for="" class="col-12 col-xl-2 col-lg-2 col-md-3 control-label text-right">{{session['lang']['list_style']}}</label>
+                    <div class="col-12 col-xl-10 col-lg-10 col-md-9">
+						<select class="form-control" name="list_style" id="list_style">
+                            <option value="0">{{session['lang']['list_style_hint']}}</option>
+                            <option value="card" {% if result.list_style=="card" %} selected {% endif %}>{{session['lang']['card']}}</option>
+                            <option value="row" {% if result.list_style=="row" %} selected {% endif %}>{{session['lang']['row']}}</option>
+                        </select>
+					</div>
+                </div>
+                <div class="form-group row">
+                    <label for="" class="col-12 col-xl-2 col-lg-2 col-md-3 control-label text-right">{{session['lang']['title']}}</label>
+                    <div class="col-12 col-xl-10 col-lg-10 col-md-9">
+						<input class="form-control" type="text" name="title" id="title" value="{{result.title}}" maxlength="100" placeholder="{{session['lang']['title_hint']}}">
+					</div>
+                </div>
+                <div class="form-group row">
+                    <label for="" class="col-12 col-xl-2 col-lg-2 col-md-3 control-label text-right">{{session['lang']['sort']}}</label>
+                    <div class="col-12 col-xl-10 col-lg-10 col-md-9">
+						<input class="form-control" type="number" name="sort" id="sort" value="{{result.sort}}" placeholder="{{session['lang']['sort_hint']}}">
+					</div>
+                </div>
+                <div class="form-group row">
+                    <label for="status" class="col-12 col-xl-2 col-lg-2 col-md-3 control-label text-right">{{session['lang']['status']}}</label>
+                    <div class="col-12 col-xl-10 col-lg-10 col-md-9">
+                        <select class="form-control" name="status" id="status">
+                            <option value="1" {% if result.status==1 %} selected {% endif %}>{{session['lang']['normal']}}</option>
+                            <option value="0" {% if result.status==0 %} selected {% endif %}>{{session['lang']['disabled']}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="submit" class="col-12 col-xl-2 col-lg-2 col-md-3 control-label"></label>
+                    <div class="col-12 col-xl-10 col-lg-10 col-md-9">
+                        <input type="submit" onclick="return submitForm();" class="btn btn-primary text-white btn-block" value="{{session['lang']['submit']}}">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

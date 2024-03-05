@@ -1,0 +1,77 @@
+{% extends 'base/base.html' %}
+{% block body %}
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+    var add_time=parseInt("{{result.add_time}}")*1000;
+    var dt=local_datetime(add_time);
+    document.getElementById('datetime').innerHTML=dt;
+},false);
+function showModal(obj){
+    var nowSrc=$(obj).find('img').attr('src');
+    var newSrc=nowSrc.replace('_thumbnail', '');
+    $('#modalImg').attr('src', newSrc);
+}
+</script>
+<div class="container">
+	<div class="row">
+        <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12 bg-white pt-3 pb-3">
+            <div class="w-100 pb-3 block">
+                <div class="social-share"></div>
+            </div>
+            <div class="w-100 pb-4" id="content">{{result.content|safe}}</div>
+            <div class="text-muted small" id="datetime"></div>
+            {% if img_arr_len>0 %}
+            <div class="row mb-2">
+                {% if img_arr_len==1 %}
+                <div class="col-12">
+                    <div class="w-100 h-100 position-ralative" onclick="showModal(this);" data-toggle="modal" data-target="#myModal">
+                        <img class="img-thumbnail d-block mt-2" src="{{img_arr[0]}}" />
+                    </div>
+                </div>
+                {% elif img_arr_len>1 and img_arr_len%2==0 and img_arr_len<5 %}
+                {% for img in img_arr %}
+                <div class="col-6">
+                    <div class="w-100 h-100 position-ralative" onclick="showModal(this);" data-toggle="modal" data-target="#myModal">
+                        <img class="img-thumbnail d-block mt-2" src="{{img}}" />
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                {% for img in img_arr %}
+                <div class="col-4">
+                    <div class="w-100 h-100 position-ralative" onclick="showModal(this);" data-toggle="modal" data-target="#myModal">
+                        <img class="img-thumbnail d-block mt-2" src="{{img}}" />
+                    </div>
+                </div>
+                {% endfor %}
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 bg-white pt-3">
+            <div class="list-group-item border-0 pl-0 pr-0 text-dark font-weight-bold">{{session['lang']['recommend']}}</div>
+            {% for r in result_recommend %}
+            <a class="card mb-3 text-dark" href="{{url_for('article.content', id=r.id)}}">
+                <img src="{{r.thumbnail}}" class="card-img-top" />
+                <div class="card-body"><p class="card-text">{{r.title}}</p></div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <img class="img-thumbnail" id="modalImg" data-dismiss="modal" src="">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{session['lang']['close']}}</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

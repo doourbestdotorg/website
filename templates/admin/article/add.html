@@ -1,0 +1,179 @@
+{% extends 'base/base.html' %}
+{% block body %}
+<script type="text/javascript" src="{{url_for('static', filename='tinymce/tinymce.min.js')}}"></script>
+<script type="text/javascript">
+tinymce.init({
+    selector: '#content',
+    images_upload_url: "{{url_for('tinymce.index')}}",
+    relative_urls: false,
+    width: "100%",
+    height: "500px",
+    branding:false,
+    image_dimensions: false,
+    plugins: [
+		'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'preview', 'anchor', 'pagebreak',
+		'searchreplace', 'wordcount', 'visualblocks', 'visualchars', 'code', 'fullscreen', 'insertdatetime',
+		'media', 'table', 'emoticons', 'template', 'help'
+    ],
+    toolbar: 'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | ' +
+		'bullist numlist outdent indent | link image | print preview media fullscreen | ' +
+		'forecolor backcolor emoticons | help',
+    menu: {
+		favs: { title: 'My Favorites', items: 'code visualaid | searchreplace | emoticons' }
+    },
+    menubar: 'favs file edit view insert format tools table help'
+});
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('file').onchange=function (ev) {
+        var formData=new FormData();
+        var files=document.getElementById('file').files;
+        formData.append('file', files[0]);
+        formData.append('msg', 'article');
+        var url="{{url_for('upload.index')}}";
+        var xmlhttp=new XMLHttpRequest();
+        xmlhttp.open('POST', url+"?"+new Date().getTime(), true);
+        xmlhttp.setRequestHeader('Cache-Control','no-cache');
+        xmlhttp.setRequestHeader('If-Modified-Since','0');
+        xmlhttp.onreadystatechange=function(){
+            if(xmlhttp.readyState!==4){
+                return false;
+            }
+            if(xmlhttp.status!==200 && xmlhttp.status!==304){
+                alert("http error:"+xmlhttp.status);
+                return false;
+            }
+            if(xmlhttp.readyState===4 && xmlhttp.status===200){
+                var json=xmlhttp.responseText;
+                json=JSON.parse(json);
+                if(json.code!=0){
+                    alert(json.message);
+                }else{
+                    document.getElementById('thumbnail_preview').src=json.message;
+                    document.getElementById('thumbnail').value=json.message;
+                    document.getElementById('thumbnail_preview_div').classList.remove('d-none');
+                }
+            }
+        };
+        xmlhttp.send(formData);
+    };
+});
+function submitForm(){
+    var category=document.getElementById('category').value;
+    var title=document.getElementById('title').value;
+    var thumbnail=document.getElementById('thumbnail').value;
+    if(category==0){
+        alert("{{session['lang']['category_hint']}}");
+        return false;
+    }else if(!title){
+        alert("{{session['lang']['title_hint']}}");
+        return false;
+    }else if(!thumbnail){
+        alert("{{session['lang']['thumbnail_hint']}}");
+        return false;
+    }
+}
+</script>
+<div class="container-fluid">
+    <div class="row mb-3">
+        <div class="col-12">
+            <ul class="nav nav-tabs">
+                <li class="nav-item"><a class="nav-link" href="{{url_for('article.index')}}">{{session['lang']['article']}}</a></li>
+				<li class="nav-item"><a class="nav-link active" href="{{url_for('article.add')}}">{{session['lang']['add']}}</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <form method="post" class="form-horizontal" enctype="multipart/form-data">
+                <div class="form-group row">
+                    <label for="" class="col-12 col-xl-2 col-lg-2 col-md-3 control-label text-right">{{session['lang']['category']}}</label>
+                    <div class="col-12 col-xl-10 col-lg-10 col-md-9">
+						<select class="form-control" name="category" id="category">
+                            <option value="0">{{session['lang']['category_hint']}}</option>
+                            {% for r in result_category %}
+                            <option value="{{r.id}}">{{r.title}}</option>
+                            {% endfor %}
+                        </select>
+					</div>
+                </div>
+                <div class="form-group row">
+                    <label for="" class="col-12 col-xl-2 col-lg-2 col-md-3 control-label text-right">{{session['lang']['title']}}</label>
+                    <div class="col-12 col-xl-10 col-lg-10 col-md-9">
+						<input class="form-control" type="text" name="title" id="title" value="" maxlength="300" placeholder="{{session['lang']['title_hint']}}">
+					</div>
+                </div>
+                <div class="form-group row">
+                    <label for="" class="col-12 col-xl-2 col-lg-2 col-md-3 control-label text-right">{{session['lang']['keyword']}}</label>
+                    <div class="col-12 col-xl-10 col-lg-10 col-md-9">
+						<input class="form-control" type="text" name="keyword" id="keyword" value="" maxlength="50" placeholder="{{session['lang']['keyword_hint']}}">
+					</div>
+                </div>
+                <div class="form-group row">
+                    <label for="" class="col-12 col-xl-2 col-lg-2 col-md-3 control-label text-right">{{session['lang']['description']}}</label>
+                    <div class="col-12 col-xl-10 col-lg-10 col-md-9">
+						<input class="form-control" type="text" name="description" id="description" value="" maxlength="500" placeholder="{{session['lang']['description_hint']}}">
+					</div>
+                </div>
+                <div class="form-group row">
+                    <label for="" class="col-12 col-xl-2 col-lg-2 col-md-3 control-label text-right">{{session['lang']['video']}}</label>
+                    <div class="col-12 col-xl-10 col-lg-10 col-md-9">
+						<input class="form-control" type="text" name="video" id="video" value="" maxlength="300" placeholder="{{session['lang']['video_hint']}}">
+					</div>
+                </div>
+                <div class="form-group row">
+                    <label for="" class="col-12 col-xl-2 col-lg-2 col-md-3 control-label text-right">{{session['lang']['sort']}}</label>
+                    <div class="col-12 col-xl-10 col-lg-10 col-md-9">
+						<input class="form-control" type="number" name="sort" id="sort" value="" placeholder="{{session['lang']['sort_hint']}}">
+					</div>
+                </div>
+                <div class="form-group row d-none" id="thumbnail_preview_div">
+                    <label for="" class="col-12 col-xl-2 col-lg-2 col-md-3 control-label text-right">{{session['lang']['thumbnail_preview']}}</label>
+                    <div class="col-12 col-xl-10 col-lg-10 col-md-9">
+						<img id="thumbnail_preview" src="" style="height: 6rem;" />
+					</div>
+                </div>
+                <div class="form-group row">
+                    <label for="" class="col-12 col-xl-2 col-lg-2 col-md-3 control-label text-right">{{session['lang']['upload_thumbnail']}}</label>
+                    <div class="col-12 col-xl-10 col-lg-10 col-md-9">
+                        <input type="hidden" name="thumbnail" id="thumbnail" value="" />
+						<input type="file" id="file" />
+					</div>
+                </div>
+                <div class="form-group row">
+                    <label for="" class="col-12 col-xl-2 col-lg-2 col-md-3 control-label text-right">{{session['lang']['content']}}</label>
+                    <div class="col-12 col-xl-10 col-lg-10 col-md-9">
+						<textarea name="content" id="content" placeholder="{{session['lang']['content_hint']}}"></textarea>
+					</div>
+                </div>
+                <div class="form-group row">
+                    <label for="status" class="col-12 col-xl-2 col-lg-2 col-md-3 control-label text-right">{{session['lang']['status']}}</label>
+                    <div class="col-12 col-xl-10 col-lg-10 col-md-9">
+                        <select class="form-control" name="status" id="status">
+                            <option value="1">{{session['lang']['normal']}}</option>
+                            <option value="0">{{session['lang']['disabled']}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="" class="col-12 col-xl-2 col-lg-2 col-md-3 control-label text-right">{{session['lang']['from_title']}}</label>
+                    <div class="col-12 col-xl-10 col-lg-10 col-md-9">
+						<input class="form-control" type="text" name="from_title" id="from_title" value="" placeholder="{{session['lang']['from_title_hint']}}">
+					</div>
+                </div>
+                <div class="form-group row">
+                    <label for="" class="col-12 col-xl-2 col-lg-2 col-md-3 control-label text-right">{{session['lang']['from_url']}}</label>
+                    <div class="col-12 col-xl-10 col-lg-10 col-md-9">
+						<input class="form-control" type="text" name="from_url" id="from_url" value="" placeholder="{{session['lang']['from_url_hint']}}">
+					</div>
+                </div>
+                <div class="form-group row">
+                    <label for="submit" class="col-12 col-xl-2 col-lg-2 col-md-3 control-label"></label>
+                    <div class="col-12 col-xl-10 col-lg-10 col-md-9">
+                        <input type="submit" onclick="return submitForm();" class="btn btn-primary text-white btn-block" value="{{session['lang']['submit']}}">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
